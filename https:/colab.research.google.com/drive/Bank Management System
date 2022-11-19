@@ -1,0 +1,742 @@
+import csv
+class Bank:
+    def __init__(self, nm, nb, t, ia, b):
+        self.Name = nm
+        self.Number = nb
+        self.Type = t
+        self.Initial_Amount = ia
+        self.Balance = b
+        self.Max = self.Balance + 1000
+
+    def get_number(self):
+        return (self.Number)
+
+    def get_initial(self):
+        return (self.Initial_Amount)
+
+    def get_max(self):
+        return (self.Max)
+
+    def deposit(self, d):
+        self.Balance += d
+
+    def withdraw(self, w):
+        self.Balance -= w
+
+    def set_name(self, new_nm):
+        self.Name = new_nm
+
+    def set_number(self, new_nb):
+        self.Number = new_nb
+
+    def set_type(self, new_t):
+        self.Type = new_t
+
+    def set_initial(self, new_ia):
+        self.Initial_Amount = new_ia
+
+    def __str__(self):
+        return "Account information:\n Name of the account holder: " + self.Name + "\n Account number: " + self.Number + "\n Account type:  " + self.Type + "\n Initial amount: " + str(
+            self.Initial_Amount) + "\n Balance: " + str(self.Balance)
+
+
+print("\t Welcome to Bank Management System")
+print("I/ New file ")
+print("II/ Existing file ")
+f = " "
+while f != "I" and f != "II":
+    f = input("Enter your choice: ")
+else:
+    if f == "I":
+        with open("Final.csv", "w", newline="") as c_file:
+            w_obj = csv.writer(c_file)
+            fie = [["Name of the Account Holder;Account Number;Account type;Initial Amount;Balance"]]
+            w_obj.writerows(fie)
+        # list of objects
+        l = []
+        # list for csv
+        l_to_add = []
+        l_to_add2 = []
+        # list of numbers
+        lnb = []
+        # number of accounts:
+        na = -1
+        print("\t\t Bank Management ")
+        print("\t 1. Create a bank account")
+        print("\t 2. Support for deposit and withdraw operations and maintaining a minimum balance")
+        print("\t 3. Search and display the account information ")
+        print("\t 4. Update an account")
+        print("\t 5. Close an account")
+        print("\t 6. List All the accounts ")
+        ch = -1
+        while ch > 6 or ch < 0:
+            ch = int(input("Enter your choice: "))
+        else:
+            pass
+
+        if ch == 1:
+            na += 1
+            l_to_add.append([])
+            print("\t 1. Create a bank account")
+            nm = input("Enter the name of the account holder: ")
+            e = 1
+            while e != 0:
+                nb = input("Enter the account number: ")
+                lnb.append(nb)
+                new_lnb = set(lnb)
+                if len(lnb) != len(new_lnb):
+                    e = 1
+                    print("This number already exists ")
+                    lnb.remove(nb)
+                else:
+                    e = 0
+
+            t = " "
+            while t != "Current" and t != "Saving":
+                t = input("Choose the account type: 'Current' or 'Saving': ")
+            else:
+                pass
+            if t == 'Current':
+                ia = 0
+                while ia < 200:
+                    ia = float(input("Enter the initial amount (more than or equal to 200 TND): "))
+                else:
+                    pass
+            if t == 'Saving':
+                ia = 0
+                while ia < 500:
+                    ia = float(input("Enter the initial amount (more than or equal to 500 TND): "))
+                else:
+                    pass
+            b = ia
+
+            account = Bank(nm, nb, t, ia, b)
+            l.append(account)
+            add_s = nm + ";" + str(nb) + ";" + t + ";" + str(ia) + ";" + str(ia)
+            l_to_add[na].append(add_s)
+
+            # wriing to csv
+            with open("Final.csv", "a", newline="") as c_file:
+                w_obj = csv.writer(c_file)
+                w_obj.writerow(l_to_add[na])
+
+            l_to_add2.append((l_to_add[-1][0]).split(";"))
+
+        if ch == 2:
+            print("\t 2. Support for deposit and withdraw operations and maintaining a minimum balance")
+            c = 0
+            while c == 0:
+                an = input("Enter your account number: ")
+                c = lnb.count(an)
+                if c == 0:
+                    print("This number does not exist")
+            for i in l:
+                gn = i.get_number()
+                if gn == an:
+                    obj = i
+                    break
+
+            print("A/ Deposit: ")
+            print("B/ Withdraw")
+            c = " "
+            while c != "A" and c != "B":
+                c = input("Enter your choice 'A' or 'B': ")
+            if c == "A":
+                d = float(input("Enter the amount to deposit: "))
+                obj.deposit(d)
+            if c == "B":
+                m = obj.get_max()
+                w = m + 1
+                while w > m:
+                    w = float(input("Enter the amount to withdraw (maximum amount to withdraw is %d) : " % m))
+                else:
+                    obj.withdraw(w)
+            new_bal = obj.Balance
+            for i in l_to_add2:
+                # i[1] is the number in each list
+                if i[1] == an:
+                    i[4] = str(new_bal)
+
+            l_to_add3 = []
+            for i in l_to_add2:
+                l_to_add3.append([";".join(i)])
+
+            # writing again
+
+            with open("Final.csv", "w", newline="") as c_file:
+                w_obj = csv.writer(c_file)
+                fie = [["Name of the Account Holder;Account Number;Account type;Initial Amount;Balance"]]
+                w_obj.writerows(fie)
+                w_obj.writerows(l_to_add3)
+
+        if ch == 3:
+            print("\t 3. Search and display the account information ")
+            c = 0
+            while c == 0:
+                an = input("Enter your account number: ")
+                c = lnb.count(an)
+                if c == 0:
+                    print("This number does not exist")
+            for i in l:
+                gn = i.get_number()
+                if gn == an:
+                    obj = i
+                    break
+
+            print(obj)
+
+        if ch == 4:
+            print("\t 4. Update an account")
+            c = 0
+            while c == 0:
+                an = input("Enter your account number: ")
+                c = lnb.count(an)
+                if c == 0:
+                    print("This number does not exist")
+            for i in l:
+                gn = i.get_number()
+                if gn == an:
+                    obj = i
+                    break
+            print("A/ Update account holder's name")
+            print("B/ Update account number")
+            print("C/ Update account type")
+            print("D/ Update initial amount")
+            dec = " "
+            while dec != "A" and dec != "B" and dec != "C" and dec != "D":
+                dec = input("Enter your choice: ")
+            else:
+                pass
+            if dec == "A":
+                new_nm = input("Enter the new account holder's name: ")
+                obj.set_name(new_nm)
+                for i in l_to_add2:
+                    if i[1] == an:
+                        # i[0] is the name in each list
+                        i[0] = new_nm
+
+                l_to_add3 = []
+                for i in l_to_add2:
+                    l_to_add3.append([";".join(i)])
+
+                # writing again
+
+                with open("Final.csv", "w", newline="") as c_file:
+                    w_obj = csv.writer(c_file)
+                    fie = [["Name of the Account Holder;Account Number;Account type;Initial Amount;Balance"]]
+                    w_obj.writerows(fie)
+                    w_obj.writerows(l_to_add3)
+
+            if dec == "B":
+                e = 1
+                while e != 0:
+                    new_nb = input("Enter the new account number: ")
+                    lnb.append(new_nb)
+                    new_lnb = set(lnb)
+                    if len(lnb) != len(new_lnb):
+                        e = 1
+                        print("This number already exists ")
+                        lnb.remove(new_nb)
+                    else:
+                        e = 0
+                else:
+                    obj.set_number(new_nb)
+
+                    for i in l_to_add2:
+                        # i[1] is the number in each list
+                        if i[1] == an:
+                            i[1] = str(new_nb)
+
+                    l_to_add3 = []
+                    for i in l_to_add2:
+                        l_to_add3.append([";".join(i)])
+
+                    # writing again
+
+                    with open("Final.csv", "w", newline="") as c_file:
+                        w_obj = csv.writer(c_file)
+                        fie = [["Name of the Account Holder;Account Number;Account type;Initial Amount;Balance"]]
+                        w_obj.writerows(fie)
+                        w_obj.writerows(l_to_add3)
+
+                    # to remove the old number
+                    lnb.remove(an)
+            if dec == "C":
+                new_t = " "
+                while new_t != "Current" and new_t != "Saving":
+                    new_t = input("Choose the new account type: 'Current' or 'Saving': ")
+                else:
+                    pass
+
+                if new_t == "Current":
+                    initial = obj.get_initial()
+                    if initial < 200:
+                        print("Your initial amount is missing %d" % (200 - initial))
+                    else:
+                        obj.set_type(new_t)
+                        for i in l_to_add2:
+                            # i[1] is the number in each list
+                            if i[1] == an:
+                                i[2] = str(new_t)
+
+                        l_to_add3 = []
+                        for i in l_to_add2:
+                            l_to_add3.append([";".join(i)])
+
+                        # writing again
+
+                        with open("Final.csv", "w", newline="") as c_file:
+                            w_obj = csv.writer(c_file)
+                            fie = [["Name of the Account Holder;Account Number;Account type;Initial Amount;Balance"]]
+                            w_obj.writerows(fie)
+                            w_obj.writerows(l_to_add3)
+
+                if new_t == "Saving":
+                    initial = obj.get_initial()
+                    if initial < 500:
+                        print("Your initial amount is missing %d" % (500 - initial))
+                    else:
+                        obj.set_type(new_t)
+                        for i in l_to_add2:
+                            # i[1] is the number in each list
+                            if i[1] == an:
+                                i[2] = str(new_t)
+
+                        l_to_add3 = []
+                        for i in l_to_add2:
+                            l_to_add3.append([";".join(i)])
+
+                        # writing again
+
+                        with open("Final.csv", "w", newline="") as c_file:
+                            w_obj = csv.writer(c_file)
+                            fie = [["Name of the Account Holder;Account Number;Account type;Initial Amount;Balance"]]
+                            w_obj.writerows(fie)
+                            w_obj.writerows(l_to_add3)
+
+            if dec == "D":
+                new_ia=0
+                ty=obj.Type
+                while (ty=="Current" and new_ia<200) or (ty=="Saving" and new_ia<500):
+                    new_ia = float(input("Enter the new initial amount: "))
+                else:
+                    pass
+                obj.set_initial(new_ia)
+                for i in l_to_add2:
+                    # i[1] is the number in each list
+                    if i[1] == an:
+                        i[3] = str(new_ia)
+
+                l_to_add3 = []
+                for i in l_to_add2:
+                    l_to_add3.append([";".join(i)])
+
+                # writing again
+
+                with open("Final.csv", "w", newline="") as c_file:
+                    w_obj = csv.writer(c_file)
+                    fie = [["Name of the Account Holder;Account Number;Account type;Initial Amount;Balance"]]
+                    w_obj.writerows(fie)
+                    w_obj.writerows(l_to_add3)
+
+        if ch == 5:
+            print("\t 5. Close an account")
+            c = 0
+            while c == 0:
+                an = input("Enter your account number: ")
+                c = lnb.count(an)
+                if c == 0:
+                    print("This number does not exist")
+            for i in l:
+                gn = i.get_number()
+                if gn == an:
+                    obj = i
+                    break
+
+            l.remove(obj)
+            lnb.remove(an)
+            for i in l_to_add2:
+                # i[1] is the number in each list
+                if i[1] == an:
+                    l_to_add2.remove(i)
+
+            l_to_add1 = []
+            for i in l_to_add2:
+                l_to_add1.append([";".join(i)])
+
+            l_to_add3 = []
+            for i in l_to_add2:
+                l_to_add3.append([";".join(i)])
+
+            # writing again
+
+            with open("Final.csv", "w", newline="") as c_file:
+                w_obj = csv.writer(c_file)
+                fie = [["Name of the Account Holder;Account Number;Account type;Initial Amount;Balance"]]
+                w_obj.writerows(fie)
+                w_obj.writerows(l_to_add3)
+
+        if ch == 6:
+            print("\t 6. List All the accounts \n")
+            for i in l:
+                print(i)
+                print("----------------------------------")
+    if f == "II":
+        # list of lists
+        l_to_add2 = []
+        # list of lists of strings
+        l_to_add = []
+        # list of all objects:
+        l = []
+        # List of numbers
+        lnb = []
+
+        with open("Final.csv", "r") as c_file:
+            read = csv.reader(c_file)
+            nb = 0
+            for i in read:
+                l_to_add.append(i)
+            else:
+                pass
+        for i in l_to_add:
+            nb += 1
+            if nb == 1:
+                continue
+            for j in i:
+                l_to_add2.append(i[0].split(";"))
+        else:
+            pass
+        # number of accounts
+        na = len(l_to_add2)
+        # creating list of numbers
+        for i in l_to_add2:
+            # i[1] is the number in each list
+            lnb.append(i[1])
+        else:
+            pass
+        # creating list of old objects
+        for i in l_to_add2:
+            obj = Bank(i[0], i[1], i[2], float(i[3]), float(i[4]))
+            l.append(obj)
+        else:
+            pass
+        print("\t\t Bank Management ")
+        print("\t 1. Create a bank account")
+        print("\t 2. Support for deposit and withdraw operations and maintaining a minimum balance")
+        print("\t 3. Search and display the account information ")
+        print("\t 4. Update an account")
+        print("\t 5. Close an account")
+        print("\t 6. List All the accounts ")
+        ch = -1
+        while ch > 6 or ch < 0:
+            ch = int(input("Enter your choice: "))
+        else:
+            pass
+        if ch == 1:
+            na += 1
+            l_to_add.append([])
+            print("\t 1. Create a bank account")
+            nm = input("Enter the name of the account holder: ")
+            e = 1
+            while e != 0:
+                nb = input("Enter the account number: ")
+                lnb.append(nb)
+                new_lnb = set(lnb)
+                if len(lnb) != len(new_lnb):
+                    e = 1
+                    print("This number already exists ")
+                    lnb.remove(nb)
+                else:
+                    e = 0
+
+            t = " "
+            while t != "Current" and t != "Saving":
+                t = input("Choose the account type: 'Current' or 'Saving': ")
+            else:
+                pass
+            if t == 'Current':
+                ia = 0
+                while ia < 200:
+                    ia = float(input("Enter the initial amount (more than or equal to 200 TND): "))
+                else:
+                    pass
+            if t == 'Saving':
+                ia = 0
+                while ia < 500:
+                    ia = float(input("Enter the initial amount (more than or equal to 500 TND): "))
+                else:
+                    pass
+
+            b = ia
+            account = Bank(nm, nb, t, ia, b)
+            l.append(account)
+            add_s = nm + ";" + str(nb) + ";" + t + ";" + str(ia) + ";" + str(ia)
+            l_to_add[na].append(add_s)
+
+            # wriing to csv
+            with open("Final.csv", "a", newline="") as c_file:
+                w_obj = csv.writer(c_file)
+                w_obj.writerow(l_to_add[na])
+
+            l_to_add2.append((l_to_add[-1][0]).split(";"))
+
+        if ch == 2:
+            print("\t 2. Support for deposit and withdraw operations and maintaining a minimum balance")
+            c = 0
+            while c == 0:
+                an = input("Enter your account number: ")
+                c = lnb.count(an)
+                if c == 0:
+                    print("This number does not exist")
+            for i in l:
+                gn = i.get_number()
+                if gn == an:
+                    obj = i
+                    break
+
+            print("A/ Deposit: ")
+            print("B/ Withdraw")
+            c = " "
+            while c != "A" and c != "B":
+                c = input("Enter your choice 'A' or 'B': ")
+            if c == "A":
+                d = float(input("Enter the amount to deposit: "))
+                obj.deposit(d)
+            if c == "B":
+                m = obj.get_max()
+                w = m + 1
+                while w > m:
+                    w = float(input("Enter the amount to withdraw (maximum amount to withdraw is %d) : " % m))
+                else:
+                    obj.withdraw(w)
+            new_bal = obj.Balance
+            for i in l_to_add2:
+                # i[1] is the number in each list
+                if i[1] == an:
+                    i[4] = str(new_bal)
+
+            l_to_add3 = []
+            for i in l_to_add2:
+                l_to_add3.append([";".join(i)])
+
+            # writing again
+
+            with open("Final.csv", "w", newline="") as c_file:
+                w_obj = csv.writer(c_file)
+                fie = [["Name of the Account Holder;Account Number;Account type;Initial Amount;Balance"]]
+                w_obj.writerows(fie)
+                w_obj.writerows(l_to_add3)
+
+        if ch == 3:
+            print("\t 3. Search and display the account information ")
+            c = 0
+            while c == 0:
+                an = input("Enter your account number: ")
+                c = lnb.count(an)
+                if c == 0:
+                    print("This number does not exist")
+            for i in l:
+                gn = i.get_number()
+                if gn == an:
+                    obj = i
+                    break
+
+            print(obj)
+
+        if ch == 4:
+            print("\t 4. Update an account")
+            c = 0
+            while c == 0:
+                an = input("Enter your account number: ")
+                c = lnb.count(an)
+                if c == 0:
+                    print("This number does not exist")
+            for i in l:
+                gn = i.get_number()
+                if gn == an:
+                    obj = i
+                    break
+            print("A/ Update account holder's name")
+            print("B/ Update account number")
+            print("C/ Update account type")
+            print("D/ Update initial amount")
+            dec = " "
+            while dec != "A" and dec != "B" and dec != "C" and dec != "D":
+                dec = input("Enter your choice: ")
+            else:
+                pass
+            if dec == "A":
+                new_nm = input("Enter the new account holder's name: ")
+                obj.set_name(new_nm)
+                for i in l_to_add2:
+                    if i[1] == an:
+                        # i[0] is the name in each list
+                        i[0] = new_nm
+
+                l_to_add3 = []
+                for i in l_to_add2:
+                    l_to_add3.append([";".join(i)])
+
+                # writing again
+
+                with open("Final.csv", "w", newline="") as c_file:
+                    w_obj = csv.writer(c_file)
+                    fie = [["Name of the Account Holder;Account Number;Account type;Initial Amount;Balance"]]
+                    w_obj.writerows(fie)
+                    w_obj.writerows(l_to_add3)
+
+            if dec == "B":
+                e = 1
+                while e != 0:
+                    new_nb = input("Enter the new account number: ")
+                    lnb.append(new_nb)
+                    new_lnb = set(lnb)
+                    if len(lnb) != len(new_lnb):
+                        e = 1
+                        print("This number already exists ")
+                        lnb.remove(new_nb)
+                    else:
+                        e = 0
+                else:
+                    obj.set_number(new_nb)
+
+                    for i in l_to_add2:
+                        # i[1] is the number in each list
+                        if i[1] == an:
+                            i[1] = str(new_nb)
+
+                    l_to_add3 = []
+                    for i in l_to_add2:
+                        l_to_add3.append([";".join(i)])
+
+                    # writing again
+
+                    with open("Final.csv", "w", newline="") as c_file:
+                        w_obj = csv.writer(c_file)
+                        fie = [["Name of the Account Holder;Account Number;Account type;Initial Amount;Balance"]]
+                        w_obj.writerows(fie)
+                        w_obj.writerows(l_to_add3)
+
+                    # to remove the old number
+                    lnb.remove(an)
+            if dec == "C":
+                new_t = " "
+                while new_t != "Current" and new_t != "Saving":
+                    new_t = input("Choose the new account type: 'Current' or 'Saving': ")
+                else:
+                    pass
+
+                if new_t == "Current":
+                    initial = obj.get_initial()
+                    if initial < 200:
+                        print("Your initial amount is missing %d" % (200 - initial))
+                    else:
+                        obj.set_type(new_t)
+                        for i in l_to_add2:
+                            # i[1] is the number in each list
+                            if i[1] == an:
+                                i[2] = str(new_t)
+
+                        l_to_add3 = []
+                        for i in l_to_add2:
+                            l_to_add3.append([";".join(i)])
+
+                        # writing again
+
+                        with open("Final.csv", "w", newline="") as c_file:
+                            w_obj = csv.writer(c_file)
+                            fie = [["Name of the Account Holder;Account Number;Account type;Initial Amount;Balance"]]
+                            w_obj.writerows(fie)
+                            w_obj.writerows(l_to_add3)
+
+                if new_t == "Saving":
+                    initial = obj.get_initial()
+                    if initial < 500:
+                        print("Your initial amount is missing %d" % (500 - initial))
+                    else:
+                        obj.set_type(new_t)
+                        for i in l_to_add2:
+                            # i[1] is the number in each list
+                            if i[1] == an:
+                                i[2] = str(new_t)
+
+                        l_to_add3 = []
+                        for i in l_to_add2:
+                            l_to_add3.append([";".join(i)])
+
+                        # writing again
+
+                        with open("Final.csv", "w", newline="") as c_file:
+                            w_obj = csv.writer(c_file)
+                            fie = [["Name of the Account Holder;Account Number;Account type;Initial Amount;Balance"]]
+                            w_obj.writerows(fie)
+                            w_obj.writerows(l_to_add3)
+
+            if dec == "D":
+                new_ia = 0
+                ty = obj.Type
+                while (ty == "Current" and new_ia < 200) or (ty == "Saving" and new_ia < 500):
+                    new_ia = float(input("Enter the new initial amount: "))
+                else:
+                    pass
+                obj.set_initial(new_ia)
+                for i in l_to_add2:
+                    # i[1] is the number in each list
+                    if i[1] == an:
+                        i[3] = str(new_ia)
+
+                l_to_add3 = []
+                for i in l_to_add2:
+                    l_to_add3.append([";".join(i)])
+
+                # writing again
+
+                with open("Final.csv", "w", newline="") as c_file:
+                    w_obj = csv.writer(c_file)
+                    fie = [["Name of the Account Holder;Account Number;Account type;Initial Amount;Balance"]]
+                    w_obj.writerows(fie)
+                    w_obj.writerows(l_to_add3)
+
+        if ch == 5:
+            print("\t 5. Close an account")
+            c = 0
+            while c == 0:
+                an = input("Enter your account number: ")
+                c = lnb.count(an)
+                if c == 0:
+                    print("This number does not exist")
+            for i in l:
+                gn = i.get_number()
+                if gn == an:
+                    obj = i
+                    break
+
+            l.remove(obj)
+            lnb.remove(an)
+            for i in l_to_add2:
+                # i[1] is the number in each list
+                if i[1] == an:
+                    l_to_add2.remove(i)
+
+            l_to_add1 = []
+            for i in l_to_add2:
+                l_to_add1.append([";".join(i)])
+
+            l_to_add3 = []
+            for i in l_to_add2:
+                l_to_add3.append([";".join(i)])
+
+            # writing again
+
+            with open("Final.csv", "w", newline="") as c_file:
+                w_obj = csv.writer(c_file)
+                fie = [["Name of the Account Holder;Account Number;Account type;Initial Amount;Balance"]]
+                w_obj.writerows(fie)
+                w_obj.writerows(l_to_add3)
+
+        if ch == 6:
+            print("\t 6. List All the accounts \n")
+            for i in l:
+                print(i)
+                print("----------------------------------")
+
